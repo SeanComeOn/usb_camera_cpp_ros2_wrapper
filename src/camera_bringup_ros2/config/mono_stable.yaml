@@ -1,0 +1,18 @@
+camera:
+  preferred_device: /dev/video0
+  vendor_id: "1e45"
+  product_id: "0209"
+  usb_serial: "CN02KX4NLG0004ABK00"
+  manufacturer: "CN02KX4NLG0004ABK00"
+  product_name: "USB Camera"
+  pixel_format: MJPG
+  width: 640
+  height: 480
+  fps: 30.0
+  frame_id: mono_camera_optical_frame
+ros:
+  node_name: mono_camera_publisher
+  image_topic: mono/image_raw
+  fps_topic: mono/actual_fps
+  image_qos_reliability: reliable
+  image_qos_depth: 10

@@ -80,6 +80,7 @@
 - 单目 USB 相机：优先用 `mono_camera_cpp_ros2`
 - 双目 USB 相机：优先用 `bi_camera_cpp_ros2`
 - Python 版：仅保留作参考和对照
+- 如果需要在远端机器上一键同时启动当前验证过的稳定单目+双目组合，优先用 `camera_bringup_ros2`
 
 ## 工作区用法
 
@@ -94,6 +95,39 @@ source install/setup.bash
 ```bash
 colcon build --packages-select mono_camera_cpp_ros2
 ```
+
+## 当前稳定启动组合
+
+仓库里额外提供了一个专门的 bringup 包：
+
+- [src/camera_bringup_ros2](src/camera_bringup_ros2)
+
+这个包只负责 launch 和默认参数，不重复实现采集逻辑。
+
+当前默认稳态参数是：
+
+- 单目
+  - `/dev/video0`
+  - `MJPG`
+  - `640x480 @ 30`
+- 双目
+  - `/dev/video3`
+  - `MJPG`
+  - `640x480 @ 30`
+
+同时启动：
+
+```bash
+colcon build --packages-select camera_bringup_ros2
+source install/setup.bash
+ros2 launch camera_bringup_ros2 dual_usb_cameras_stable.launch.py
+```
+
+默认会同时启动：
+
+- 单目相机节点
+- 双目相机节点
+- 一份预配置好的 `rviz2`
 
 ## 说明
 

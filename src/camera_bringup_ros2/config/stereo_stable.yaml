@@ -1,0 +1,25 @@
+camera:
+  preferred_device: /dev/video3
+  vendor_id: "1bcf"
+  product_id: "0b15"
+  usb_serial: "01.00.00"
+  manufacturer: "STYT 241029 K"
+  product_name: "USB Camera"
+  pixel_format: MJPG
+  width: 640
+  height: 480
+  fps: 30.0
+  split_stereo: true
+  stereo_layout: horizontal
+  publish_combined: true
+  left_frame_id: stereo_left_optical_frame
+  right_frame_id: stereo_right_optical_frame
+  combined_frame_id: stereo_combined_optical_frame
+ros:
+  node_name: bi_camera_publisher
+  combined_topic: stereo/image_raw
+  left_topic: stereo/left/image_raw
+  right_topic: stereo/right/image_raw
+  fps_topic: stereo/actual_fps
+  image_qos_reliability: reliable
+  image_qos_depth: 10
