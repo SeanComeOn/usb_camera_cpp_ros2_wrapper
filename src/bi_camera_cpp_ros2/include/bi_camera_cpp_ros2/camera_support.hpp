@@ -41,7 +41,7 @@ struct DeviceSummary
 
 struct CameraConfig
 {
-  std::string preferred_device{"/dev/video0"};
+  std::string preferred_device;
   std::string vendor_id;
   std::string product_id;
   std::string usb_serial;

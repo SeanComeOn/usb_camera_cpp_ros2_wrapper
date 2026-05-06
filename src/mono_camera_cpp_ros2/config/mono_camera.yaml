@@ -1,9 +1,9 @@
 camera:
-  preferred_device: /dev/video0
+  preferred_device: ""
   vendor_id: "1e45"
   product_id: "0209"
-  usb_serial: ""
-  manufacturer: ""
+  usb_serial: "CN02KX4NLG0004ABK00"
+  manufacturer: "CN02KX4NLG0004ABK00"
   product_name: USB Camera
   pixel_format: MJPG
   width: 640

@@ -1,5 +1,5 @@
 camera:
-  preferred_device: /dev/video3
+  preferred_device: ""
   vendor_id: "1bcf"
   product_id: "0b15"
   usb_serial: "01.00.00"

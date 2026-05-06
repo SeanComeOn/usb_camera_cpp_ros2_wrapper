@@ -11,12 +11,14 @@
 当前默认稳态配置基于 Jetson Orin Nano 上的实际验证结果：
 
 - 单目 USB 相机
-  - `/dev/video0`
+  - `VID:PID=1e45:0209`
+  - `USB serial=CN02KX4NLG0004ABK00`
   - `MJPG`
   - `640x480`
   - `30 FPS`
 - 双目 USB 相机
-  - `/dev/video3`
+  - `VID:PID=1bcf:0b15`
+  - `USB serial=01.00.00`
   - `MJPG`
   - `640x480`
   - `30 FPS`
@@ -39,7 +41,8 @@ ros2 launch camera_bringup_ros2 dual_usb_cameras_stable.launch.py start_rviz:=fa
 
 ## 说明
 
-- 如果 Jetson 重枚举导致双目不再是 `/dev/video3`，需要更新 `config/stereo_stable.yaml`
+- 默认配置优先通过 `vendor_id / product_id / usb_serial` 匹配设备，`preferred_device` 为空时不会依赖 `/dev/video*` 编号
+- 只有在设备身份信息缺失或需要强制指定某个节点时，才建议填写 `preferred_device`
 - 默认 RViz 配置文件在 `rviz/dual_usb_cameras_stable.rviz`
 - 这个包依赖：
   - `mono_camera_cpp_ros2`

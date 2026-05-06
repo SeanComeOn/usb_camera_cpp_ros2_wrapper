@@ -9,7 +9,7 @@ import yaml
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "camera": {
-        "preferred_device": "/dev/video0",
+        "preferred_device": "",
         "vendor_id": "",
         "product_id": "",
         "usb_serial": "",
