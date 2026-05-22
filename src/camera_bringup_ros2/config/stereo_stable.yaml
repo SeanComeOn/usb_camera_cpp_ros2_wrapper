@@ -6,8 +6,8 @@ camera:
   manufacturer: "STYT 241029 K"
   product_name: "USB Camera"
   pixel_format: MJPG
-  width: 640
-  height: 480
+  width: 1280
+  height: 360
   fps: 30.0
   split_stereo: true
   stereo_layout: horizontal

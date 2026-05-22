@@ -55,6 +55,14 @@ sensor_msgs::msg::Image frame_to_msg(
   return msg;
 }
 
+cv::Mat center_crop_square(const cv::Mat & frame)
+{
+  const int square_size = std::min(frame.cols, frame.rows);
+  const int offset_x = (frame.cols - square_size) / 2;
+  const int offset_y = (frame.rows - square_size) / 2;
+  return frame(cv::Rect(offset_x, offset_y, square_size, square_size));
+}
+
 rclcpp::QoS make_image_qos(const RuntimeConfig & config)
 {
   rclcpp::QoS qos(rclcpp::KeepLast(std::max(1, config.ros.image_qos_depth)));
@@ -203,8 +211,10 @@ private:
         continue;
       }
 
+      const cv::Mat cropped_frame = center_crop_square(frame);
+
       try {
-        image_pub_->publish(frame_to_msg(frame, now(), config_.camera.frame_id));
+        image_pub_->publish(frame_to_msg(cropped_frame, now(), config_.camera.frame_id));
       } catch (const std::exception &) {
         if (stop_requested_.load() || !rclcpp::ok()) {
           break;

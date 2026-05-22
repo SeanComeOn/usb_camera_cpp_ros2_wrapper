@@ -113,7 +113,7 @@ colcon build --packages-select mono_camera_cpp_ros2
 - 双目
   - `/dev/video3`
   - `MJPG`
-  - `640x480 @ 30`
+  - `2560x720 @ 30`
 
 同时启动：
 

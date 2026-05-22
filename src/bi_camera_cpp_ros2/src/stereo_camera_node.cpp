@@ -1,5 +1,6 @@
 #include "bi_camera_cpp_ros2/camera_support.hpp"
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstring>
@@ -53,6 +54,14 @@ sensor_msgs::msg::Image frame_to_msg(
   }
 
   return msg;
+}
+
+cv::Mat center_crop_square(const cv::Mat & frame)
+{
+  const int square_size = std::min(frame.cols, frame.rows);
+  const int offset_x = (frame.cols - square_size) / 2;
+  const int offset_y = (frame.rows - square_size) / 2;
+  return frame(cv::Rect(offset_x, offset_y, square_size, square_size));
 }
 
 rclcpp::QoS make_image_qos(const RuntimeConfig & config)
@@ -252,14 +261,26 @@ private:
 
       const auto stamp = now();
       const auto [left_frame, right_frame] = split_frame(frame);
+      const cv::Mat left_square = center_crop_square(left_frame);
+      const cv::Mat right_square = center_crop_square(right_frame);
 
       try {
         if (combined_pub_) {
-          combined_pub_->publish(frame_to_msg(frame, stamp, config_.camera.combined_frame_id));
+          if (config_.camera.stereo_layout == "vertical") {
+            cv::Mat combined_square;
+            cv::vconcat(left_square, right_square, combined_square);
+            combined_pub_->publish(frame_to_msg(combined_square, stamp, config_.camera.combined_frame_id));
+          } else if (config_.camera.stereo_layout == "mono") {
+            combined_pub_->publish(frame_to_msg(left_square, stamp, config_.camera.combined_frame_id));
+          } else {
+            cv::Mat combined_square;
+            cv::hconcat(left_square, right_square, combined_square);
+            combined_pub_->publish(frame_to_msg(combined_square, stamp, config_.camera.combined_frame_id));
+          }
         }
         if (left_pub_ && right_pub_) {
-          left_pub_->publish(frame_to_msg(left_frame, stamp, config_.camera.left_frame_id));
-          right_pub_->publish(frame_to_msg(right_frame, stamp, config_.camera.right_frame_id));
+          left_pub_->publish(frame_to_msg(left_square, stamp, config_.camera.left_frame_id));
+          right_pub_->publish(frame_to_msg(right_square, stamp, config_.camera.right_frame_id));
         }
       } catch (const std::exception &) {
         if (stop_requested_.load() || !rclcpp::ok()) {
