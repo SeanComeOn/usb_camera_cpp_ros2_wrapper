@@ -1,0 +1,13 @@
+[Unit]
+Description=USB camera power and recovery guard
+After=systemd-udevd.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/orin-usb-camera-guard
+ExecStart=/usr/local/sbin/orin-usb-camera-guard $ORIN_CAMERA_GUARD_ARGS
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

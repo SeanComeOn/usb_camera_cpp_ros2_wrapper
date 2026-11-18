@@ -51,6 +51,10 @@ struct CameraConfig
   int width{1280};
   int height{480};
   double fps{30.0};
+  double publish_fps{0.0};
+  int read_failure_threshold{5};
+  int read_retry_delay_ms{100};
+  int reconnect_delay_ms{1000};
   bool split_stereo{true};
   std::string stereo_layout{"horizontal"};
   bool publish_combined{true};

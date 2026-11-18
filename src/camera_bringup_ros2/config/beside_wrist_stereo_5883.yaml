@@ -1,0 +1,29 @@
+camera:
+  preferred_device: "/dev/v4l/by-path/pci-0000:00:14.0-usb-0:4:1.0-video-index0"
+  vendor_id: "0bda"
+  product_id: "5883"
+  usb_serial: "20000001"
+  manufacturer: "Generic"
+  product_name: "USB Camera"
+  pixel_format: MJPG
+  width: 2560
+  height: 960
+  fps: 60.0
+  publish_fps: 30.0
+  read_failure_threshold: 5
+  read_retry_delay_ms: 100
+  reconnect_delay_ms: 1000
+  split_stereo: true
+  stereo_layout: horizontal
+  publish_combined: false
+  left_frame_id: wrist_stereo_left_optical_frame
+  right_frame_id: wrist_stereo_right_optical_frame
+  combined_frame_id: wrist_stereo_combined_optical_frame
+ros:
+  node_name: wrist_stereo_camera_publisher
+  combined_topic: wrist/stereo/image_raw
+  left_topic: wrist/stereo/left/image_raw
+  right_topic: wrist/stereo/right/image_raw
+  fps_topic: wrist/stereo/actual_fps
+  image_qos_reliability: reliable
+  image_qos_depth: 2

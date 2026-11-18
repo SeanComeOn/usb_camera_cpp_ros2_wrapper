@@ -9,6 +9,10 @@ camera:
   width: 640
   height: 480
   fps: 30.0
+  exposure_dynamic_framerate: false
+  read_failure_threshold: 5
+  read_retry_delay_ms: 100
+  reconnect_delay_ms: 1000
   frame_id: mono_camera_optical_frame
 ros:
   node_name: mono_camera_publisher

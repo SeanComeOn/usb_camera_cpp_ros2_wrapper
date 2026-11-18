@@ -6,7 +6,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WS_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 START_RVIZ="${START_RVIZ:-true}"
+START_WATCHDOG="${START_WATCHDOG:-true}"
 BUILD_ON_START="${BUILD_ON_START:-true}"
+MONO_CONFIG="${MONO_CONFIG:-}"
+STEREO_CONFIG="${STEREO_CONFIG:-}"
+WRIST_STEREO_CONFIG="${WRIST_STEREO_CONFIG:-}"
+WRIST_STEREO_ENABLED="${WRIST_STEREO_ENABLED:-false}"
+WRIST_USB_IDENTITY="${WRIST_USB_IDENTITY:-}"
+STEREO_USB_IDENTITY="${STEREO_USB_IDENTITY:-}"
+WRIST_USB_DEVICE="${WRIST_USB_DEVICE:-}"
+STEREO_USB_DEVICE="${STEREO_USB_DEVICE:-}"
+WRIST_STEREO_USB_IDENTITY="${WRIST_STEREO_USB_IDENTITY:-}"
+WRIST_STEREO_USB_DEVICE="${WRIST_STEREO_USB_DEVICE:-}"
 
 usage() {
   cat <<EOF
@@ -19,7 +30,18 @@ Run this directly on the target machine, for example on Orin:
 
 Environment overrides:
   START_RVIZ=true|false
+  START_WATCHDOG=true|false
   BUILD_ON_START=true|false
+  MONO_CONFIG=/absolute/path/to/mono.yaml
+  STEREO_CONFIG=/absolute/path/to/stereo.yaml
+  WRIST_STEREO_CONFIG=/absolute/path/to/wrist_stereo.yaml
+  WRIST_STEREO_ENABLED=true|false
+  WRIST_USB_IDENTITY=vendor:product
+  STEREO_USB_IDENTITY=vendor:product
+  WRIST_USB_DEVICE=/dev/v4l/by-path/...
+  STEREO_USB_DEVICE=/dev/v4l/by-path/...
+  WRIST_STEREO_USB_IDENTITY=vendor:product
+  WRIST_STEREO_USB_DEVICE=/dev/v4l/by-path/...
 EOF
 }
 
@@ -44,5 +66,38 @@ fi
 source install/setup.bash
 set -u
 
-exec ros2 launch camera_bringup_ros2 dual_usb_cameras_stable.launch.py \
+launch_args=(
   start_rviz:="${START_RVIZ}"
+  start_watchdog:="${START_WATCHDOG}"
+  wrist_stereo_enabled:="${WRIST_STEREO_ENABLED}"
+)
+if [[ -n "${MONO_CONFIG}" ]]; then
+  launch_args+=(mono_config:="${MONO_CONFIG}")
+fi
+if [[ -n "${STEREO_CONFIG}" ]]; then
+  launch_args+=(stereo_config:="${STEREO_CONFIG}")
+fi
+if [[ -n "${WRIST_STEREO_CONFIG}" ]]; then
+  launch_args+=(wrist_stereo_config:="${WRIST_STEREO_CONFIG}")
+fi
+if [[ -n "${WRIST_USB_IDENTITY}" ]]; then
+  launch_args+=(wrist_usb_identity:="${WRIST_USB_IDENTITY}")
+fi
+if [[ -n "${STEREO_USB_IDENTITY}" ]]; then
+  launch_args+=(stereo_usb_identity:="${STEREO_USB_IDENTITY}")
+fi
+if [[ -n "${WRIST_USB_DEVICE}" ]]; then
+  launch_args+=(wrist_usb_device:="${WRIST_USB_DEVICE}")
+fi
+if [[ -n "${STEREO_USB_DEVICE}" ]]; then
+  launch_args+=(stereo_usb_device:="${STEREO_USB_DEVICE}")
+fi
+if [[ -n "${WRIST_STEREO_USB_IDENTITY}" ]]; then
+  launch_args+=(wrist_stereo_usb_identity:="${WRIST_STEREO_USB_IDENTITY}")
+fi
+if [[ -n "${WRIST_STEREO_USB_DEVICE}" ]]; then
+  launch_args+=(wrist_stereo_usb_device:="${WRIST_STEREO_USB_DEVICE}")
+fi
+
+exec ros2 launch camera_bringup_ros2 dual_usb_cameras_stable.launch.py \
+  "${launch_args[@]}"

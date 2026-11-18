@@ -225,6 +225,10 @@ RuntimeConfig load_config_file(const std::string & path)
     apply_if_present(camera, "width", config.camera.width);
     apply_if_present(camera, "height", config.camera.height);
     apply_if_present(camera, "fps", config.camera.fps);
+    apply_if_present(camera, "publish_fps", config.camera.publish_fps);
+    apply_if_present(camera, "read_failure_threshold", config.camera.read_failure_threshold);
+    apply_if_present(camera, "read_retry_delay_ms", config.camera.read_retry_delay_ms);
+    apply_if_present(camera, "reconnect_delay_ms", config.camera.reconnect_delay_ms);
     apply_if_present(camera, "split_stereo", config.camera.split_stereo);
     apply_if_present(camera, "stereo_layout", config.camera.stereo_layout);
     apply_if_present(camera, "publish_combined", config.camera.publish_combined);
@@ -263,6 +267,10 @@ void save_config_file(const std::string & path, const RuntimeConfig & config)
   out << YAML::Key << "width" << YAML::Value << config.camera.width;
   out << YAML::Key << "height" << YAML::Value << config.camera.height;
   out << YAML::Key << "fps" << YAML::Value << config.camera.fps;
+  out << YAML::Key << "publish_fps" << YAML::Value << config.camera.publish_fps;
+  out << YAML::Key << "read_failure_threshold" << YAML::Value << config.camera.read_failure_threshold;
+  out << YAML::Key << "read_retry_delay_ms" << YAML::Value << config.camera.read_retry_delay_ms;
+  out << YAML::Key << "reconnect_delay_ms" << YAML::Value << config.camera.reconnect_delay_ms;
   out << YAML::Key << "split_stereo" << YAML::Value << config.camera.split_stereo;
   out << YAML::Key << "stereo_layout" << YAML::Value << config.camera.stereo_layout;
   out << YAML::Key << "publish_combined" << YAML::Value << config.camera.publish_combined;
@@ -345,25 +353,43 @@ std::optional<DeviceSummary> find_matching_device(
 {
   const auto devices = discover_video_devices();
 
+  const auto identity_matches = [&](const DeviceSummary & device) {
+      if (!vendor_id.empty() && lowercase_copy(device.vendor_id) != lowercase_copy(vendor_id)) {
+        return false;
+      }
+      if (!product_id.empty() && lowercase_copy(device.product_id) != lowercase_copy(product_id)) {
+        return false;
+      }
+      if (!serial.empty() && device.serial != serial) {
+        return false;
+      }
+      return true;
+    };
+
   if (!preferred_device.empty()) {
+    std::error_code preferred_error;
+    const fs::path resolved_preferred = fs::canonical(preferred_device, preferred_error);
     for (const auto & device : devices) {
-      if (device.video_path == preferred_device && device.supports_capture) {
+      std::error_code device_error;
+      const fs::path resolved_device = fs::canonical(device.video_path, device_error);
+      if (
+        !preferred_error && !device_error && resolved_device == resolved_preferred &&
+        device.supports_capture &&
+        identity_matches(device))
+      {
         return device;
       }
     }
+    // A configured physical path identifies one specific camera. Falling back to
+    // VID/PID here can silently open another identical USB camera.
+    return std::nullopt;
   }
 
   for (const auto & device : devices) {
     if (!device.supports_capture) {
       continue;
     }
-    if (!vendor_id.empty() && lowercase_copy(device.vendor_id) != lowercase_copy(vendor_id)) {
-      continue;
-    }
-    if (!product_id.empty() && lowercase_copy(device.product_id) != lowercase_copy(product_id)) {
-      continue;
-    }
-    if (!serial.empty() && !device.serial.empty() && device.serial != serial) {
+    if (!identity_matches(device)) {
       continue;
     }
     if (!vendor_id.empty() || !product_id.empty() || !serial.empty()) {
@@ -371,9 +397,11 @@ std::optional<DeviceSummary> find_matching_device(
     }
   }
 
-  for (const auto & device : devices) {
-    if (device.supports_capture) {
-      return device;
+  if (preferred_device.empty() && vendor_id.empty() && product_id.empty() && serial.empty()) {
+    for (const auto & device : devices) {
+      if (device.supports_capture) {
+        return device;
+      }
     }
   }
   return std::nullopt;

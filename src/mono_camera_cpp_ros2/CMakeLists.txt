@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(image_transport REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -41,6 +42,7 @@ target_link_libraries(mono_camera_node
 )
 ament_target_dependencies(mono_camera_node
   rclcpp
+  image_transport
   sensor_msgs
   std_msgs
 )

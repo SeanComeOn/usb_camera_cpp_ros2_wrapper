@@ -5,10 +5,11 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Mono Camera1
-        - /Stereo Combined1
-        - /Stereo Left1
-        - /Stereo Right1
+        - /Wrist Mono FPV1
+        - /Wrist Stereo FPV Left1
+        - /Wrist Stereo FPV Right1
+        - /Third-person Stereo Left1
+        - /Third-person Stereo Right1
       Splitter Ratio: 0.5
     Tree Height: 720
   - Class: rviz_common/Selection
@@ -39,17 +40,18 @@ Visualization Manager:
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: Mono Camera
+      Name: Wrist Mono FPV
       Normalize Range: true
       Queue Size: 2
-      Reliability Policy: Reliable
+      Reliability Policy: Best Effort
+      Transport Hint: compressed
       Topic:
         Depth: 5
         Durability Policy: Volatile
         Filter size: 10
         History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /mono/image_raw
+        Reliability Policy: Best Effort
+        Value: /mono/image_raw/compressed
       Value: true
     - Alpha: 1
       Class: rviz_default_plugins/Image
@@ -57,17 +59,18 @@ Visualization Manager:
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: Stereo Combined
+      Name: Wrist Stereo FPV Left
       Normalize Range: true
       Queue Size: 2
-      Reliability Policy: Reliable
+      Reliability Policy: Best Effort
+      Transport Hint: compressed
       Topic:
         Depth: 5
         Durability Policy: Volatile
         Filter size: 10
         History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /stereo/image_raw
+        Reliability Policy: Best Effort
+        Value: /wrist/stereo/left/image_raw/compressed
       Value: true
     - Alpha: 1
       Class: rviz_default_plugins/Image
@@ -75,17 +78,18 @@ Visualization Manager:
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: Stereo Left
+      Name: Wrist Stereo FPV Right
       Normalize Range: true
       Queue Size: 2
-      Reliability Policy: Reliable
+      Reliability Policy: Best Effort
+      Transport Hint: compressed
       Topic:
         Depth: 5
         Durability Policy: Volatile
         Filter size: 10
         History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /stereo/left/image_raw
+        Reliability Policy: Best Effort
+        Value: /wrist/stereo/right/image_raw/compressed
       Value: true
     - Alpha: 1
       Class: rviz_default_plugins/Image
@@ -93,17 +97,37 @@ Visualization Manager:
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: Stereo Right
+      Name: Third-person Stereo Left
       Normalize Range: true
       Queue Size: 2
-      Reliability Policy: Reliable
+      Reliability Policy: Best Effort
+      Transport Hint: compressed
       Topic:
         Depth: 5
         Durability Policy: Volatile
         Filter size: 10
         History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /stereo/right/image_raw
+        Reliability Policy: Best Effort
+        Value: /stereo/left/image_raw/compressed
+      Value: true
+    - Alpha: 1
+      Class: rviz_default_plugins/Image
+      Enabled: true
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Third-person Stereo Right
+      Normalize Range: true
+      Queue Size: 2
+      Reliability Policy: Best Effort
+      Transport Hint: compressed
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /stereo/right/image_raw/compressed
       Value: true
   Enabled: true
   Global Options:

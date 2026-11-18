@@ -6,13 +6,18 @@ camera:
   manufacturer: "CN02KX4NLG0004ABK00"
   product_name: "USB Camera"
   pixel_format: MJPG
-  width: 640
-  height: 480
+  width: 1920
+  height: 1080
   fps: 30.0
+  # Keep 30 FPS under low light instead of allowing auto exposure to lower it.
+  exposure_dynamic_framerate: false
+  read_failure_threshold: 5
+  read_retry_delay_ms: 100
+  reconnect_delay_ms: 1000
   frame_id: mono_camera_optical_frame
 ros:
   node_name: mono_camera_publisher
   image_topic: mono/image_raw
   fps_topic: mono/actual_fps
-  image_qos_reliability: reliable
-  image_qos_depth: 10
+  image_qos_reliability: best_effort
+  image_qos_depth: 2

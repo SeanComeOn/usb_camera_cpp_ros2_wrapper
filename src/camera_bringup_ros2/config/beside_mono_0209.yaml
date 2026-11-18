@@ -1,0 +1,22 @@
+camera:
+  preferred_device: ""
+  vendor_id: "1e45"
+  product_id: "0209"
+  usb_serial: "CN02KX4NLG0004ABK00"
+  manufacturer: "CN02KX4NLG0004ABK00"
+  product_name: "USB Camera"
+  pixel_format: MJPG
+  width: 1920
+  height: 1080
+  fps: 30.0
+  exposure_dynamic_framerate: false
+  read_failure_threshold: 5
+  read_retry_delay_ms: 100
+  reconnect_delay_ms: 1000
+  frame_id: mono_camera_optical_frame
+ros:
+  node_name: mono_camera_publisher
+  image_topic: mono/image_raw
+  fps_topic: mono/actual_fps
+  image_qos_reliability: reliable
+  image_qos_depth: 2

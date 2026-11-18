@@ -1,0 +1,6 @@
+# beside: the two stereo cameras share VID:PID 0bda:5883 on direct xHCI root
+# ports. Resetting usb2 to recover either camera disconnects both, so the system
+# guard never resets shared hubs. For the commissioned mono camera only,
+# stale image data plus recent kernel USB -110 errors permit a bounded reset
+# of that exact VID/PID/serial. Missing hardware still needs physical reconnect.
+ORIN_CAMERA_GUARD_ARGS="--expected 1e45:0209 --expected 0bda:5883 --missing-grace 15 --stalled-camera 1e45:0209,CN02KX4NLG0004ABK00,/home/beside/.local/state/fr3-control-console/cameras/wrist.json,/mono/image_raw"

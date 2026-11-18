@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fr3.local/schemas/recording_metadata_v4.schema.json",
+  "title": "FR3 five-stream multimodal recording metadata v4",
+  "type": "object",
+  "required": [
+    "recording_schema",
+    "recording_format_version",
+    "minimum_reader_version",
+    "recording_state",
+    "started_at",
+    "ended_at",
+    "fps",
+    "trajectory_hz",
+    "video_frame_count",
+    "trajectory_sample_count",
+    "record_time_origin_ns",
+    "timing_contract",
+    "timing_statistics",
+    "stereo_left_video",
+    "stereo_right_video",
+    "wrist_stereo_left_video",
+    "wrist_stereo_right_video",
+    "wrist_video",
+    "video_frames_csv",
+    "trajectory_csv"
+  ],
+  "properties": {
+    "recording_schema": {"const": "fr3-multimodal-recording"},
+    "recording_format_version": {"const": 4},
+    "minimum_reader_version": {"type": "integer", "minimum": 1, "maximum": 4},
+    "backward_compatible_with": {
+      "type": "array",
+      "items": {"type": "integer", "minimum": 1, "maximum": 3},
+      "uniqueItems": true
+    },
+    "recording_state": {"const": "complete"},
+    "started_at": {"type": "string"},
+    "ended_at": {"type": "string"},
+    "fps": {"type": "number", "exclusiveMinimum": 0},
+    "trajectory_hz": {"type": "number", "exclusiveMinimum": 0},
+    "video_frame_count": {"type": "integer", "minimum": 0},
+    "trajectory_sample_count": {"type": "integer", "minimum": 0},
+    "control_input_count": {"type": "integer", "minimum": 0},
+    "record_time_origin_ns": {"type": ["integer", "null"], "minimum": 0},
+    "stereo_left_video": {"const": "stereo_left.mp4"},
+    "stereo_right_video": {"const": "stereo_right.mp4"},
+    "wrist_stereo_left_video": {"const": "wrist_stereo_left.mp4"},
+    "wrist_stereo_right_video": {"const": "wrist_stereo_right.mp4"},
+    "wrist_video": {"const": "wrist.mp4"},
+    "image_transport": {"enum": ["raw", "compressed"]},
+    "video_frames_csv": {"const": "video_frames.csv"},
+    "trajectory_csv": {"const": "trajectory.csv"},
+    "control_input_csv": {"const": "control_inputs.csv"},
+    "timing_contract": {
+      "type": "object",
+      "required": [
+        "scheduler_clock",
+        "record_time_clock",
+        "source_timestamp_clock",
+        "timestamp_unit",
+        "trajectory_alignment",
+        "video_alignment",
+        "video_playback_time",
+        "trajectory_requested_hz",
+        "video_requested_fps"
+      ],
+      "properties": {
+        "scheduler_clock": {"const": "steady_monotonic"},
+        "record_time_clock": {"const": "ros_node_clock"},
+        "source_timestamp_clock": {"const": "ros_message_header_or_tf_header"},
+        "timestamp_unit": {"const": "nanoseconds"},
+        "trajectory_alignment": {"const": "latest_observation_hold_at_recorder_tick"},
+        "video_alignment": {"const": "latest_encoded_video_frame"},
+        "video_playback_time": {"const": "video_frame_index / encoded_fps"},
+        "trajectory_requested_hz": {"type": "number", "exclusiveMinimum": 0},
+        "video_requested_fps": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "timing_statistics": {
+      "type": "object",
+      "required": ["video", "trajectory", "sources"],
+      "properties": {
+        "video": {"$ref": "#/$defs/rateStatistics"},
+        "trajectory": {"$ref": "#/$defs/rateStatistics"},
+        "sources": {
+          "type": "object",
+          "required": [
+            "joint_state",
+            "end_effector_transform",
+            "stereo_left_image",
+            "stereo_right_image",
+            "wrist_stereo_left_image",
+            "wrist_stereo_right_image",
+            "wrist_image"
+          ],
+          "additionalProperties": {"$ref": "#/$defs/sourceStatistics"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "joint_state_fields": {
+      "type": "array",
+      "items": {"enum": ["position", "velocity", "effort"]},
+      "uniqueItems": true
+    },
+    "end_effector_pose_source": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "rateStatistics": {
+      "type": "object",
+      "required": ["requested_hz", "sample_count", "duration_sec", "observed_hz"],
+      "properties": {
+        "requested_hz": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "sample_count": {"type": "integer", "minimum": 0},
+        "duration_sec": {"type": ["number", "null"], "minimum": 0},
+        "observed_hz": {"type": ["number", "null"], "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "sourceStatistics": {
+      "allOf": [
+        {"$ref": "#/$defs/rateStatistics"},
+        {
+          "type": "object",
+          "required": ["unique_timestamp_count", "age_ms"],
+          "properties": {
+            "unique_timestamp_count": {"type": "integer", "minimum": 0},
+            "age_ms": {
+              "type": "object",
+              "required": ["minimum", "mean", "maximum"],
+              "properties": {
+                "minimum": {"type": ["number", "null"]},
+                "mean": {"type": ["number", "null"]},
+                "maximum": {"type": ["number", "null"]}
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "additionalProperties": true
+}

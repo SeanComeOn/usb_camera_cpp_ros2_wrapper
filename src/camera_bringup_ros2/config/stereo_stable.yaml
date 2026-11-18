@@ -6,12 +6,15 @@ camera:
   manufacturer: "STYT 241029 K"
   product_name: "USB Camera"
   pixel_format: MJPG
-  width: 1280
-  height: 360
+  width: 2560
+  height: 720
   fps: 30.0
+  read_failure_threshold: 5
+  read_retry_delay_ms: 100
+  reconnect_delay_ms: 1000
   split_stereo: true
   stereo_layout: horizontal
-  publish_combined: true
+  publish_combined: false
   left_frame_id: stereo_left_optical_frame
   right_frame_id: stereo_right_optical_frame
   combined_frame_id: stereo_combined_optical_frame
@@ -21,5 +24,5 @@ ros:
   left_topic: stereo/left/image_raw
   right_topic: stereo/right/image_raw
   fps_topic: stereo/actual_fps
-  image_qos_reliability: reliable
-  image_qos_depth: 10
+  image_qos_reliability: best_effort
+  image_qos_depth: 2

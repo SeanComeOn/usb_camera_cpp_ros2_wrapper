@@ -51,6 +51,10 @@ struct CameraConfig
   int width{640};
   int height{480};
   double fps{30.0};
+  bool exposure_dynamic_framerate{false};
+  int read_failure_threshold{5};
+  int read_retry_delay_ms{100};
+  int reconnect_delay_ms{1000};
   std::string frame_id{"mono_camera_optical_frame"};
 };
 
@@ -80,6 +84,7 @@ std::optional<DeviceSummary> find_matching_device(
   const std::string & product_id,
   const std::string & serial);
 std::vector<CaptureMode> enumerate_capture_modes(const std::string & device_path);
+void set_exposure_dynamic_framerate(const std::string & device_path, bool enabled);
 
 std::string fourcc_to_string(unsigned int code);
 int fourcc_from_string(const std::string & code);
